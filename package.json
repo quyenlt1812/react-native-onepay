@@ -142,8 +142,12 @@
     "targets": [
       "commonjs",
       "module",
-      "typescript",
-      "aar"
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
     ]
   }
 }
