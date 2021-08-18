@@ -1,7 +1,7 @@
 {
-  "name": "react-native-onepay-hash",
+  "name": "react-native-onepay",
   "version": "0.1.0",
-  "description": "Hash secure key logic for onepay",
+  "description": "Hash secure key and generate pay url for onepay",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
@@ -36,13 +36,13 @@
     "ios",
     "android"
   ],
-  "repository": "https://github.com/quyenlt1812/react-native-onepay-hash.git",
+  "repository": "https://github.com/quyenlt1812/react-native-onepay.git",
   "author": "Le Tu Quyen <quyenlt1812@gmail.com> (https://github.com/quyenlt1812)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/quyenlt1812/react-native-onepay-hash.git/issues"
+    "url": "https://github.com/quyenlt1812/react-native-onepay.git/issues"
   },
-  "homepage": "https://github.com/quyenlt1812/react-native-onepay-hash.git#readme",
+  "homepage": "https://github.com/quyenlt1812/react-native-onepay.git#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
