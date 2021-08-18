@@ -19,6 +19,6 @@ type OnepayHashType = {
     ): Promise<string>;
 };
 
-const { OnepayHash } = NativeModules;
+const { OnepayHash: Onepay } = NativeModules;
 
-export default OnepayHash as OnepayHashType;
+export default Onepay as OnepayHashType;

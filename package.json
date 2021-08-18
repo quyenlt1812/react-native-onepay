@@ -1,6 +1,6 @@
 {
   "name": "react-native-onepay",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Hash secure key and generate pay url for onepay",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -25,6 +25,7 @@
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "prepare": "bob build",
     "release": "release-it",
     "example": "yarn --cwd example",
     "pods": "cd example && pod-install --quiet",
