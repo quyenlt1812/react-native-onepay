@@ -1,6 +1,6 @@
 # react-native-onepay-hash
 
-Hash secure key logic for onepay
+Hash secure key and generate pay url for onepay
 
 ## Installation
 
@@ -11,11 +11,11 @@ npm install react-native-onepay-hash
 ## Usage
 
 ```js
-import OnepayHash from "react-native-onepay-hash";
+import OnepayHash from "react-native-onepay";
 
 // ...
 
-const result = await OnepayHash.multiply(3, 7);
+const result = await OnepayHash.generateURl(params);
 ```
 
 ## Contributing
