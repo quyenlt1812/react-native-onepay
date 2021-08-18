@@ -1,11 +1,13 @@
-# react-native-onepay-hash
+# react-native-onepay
 
 Hash secure key and generate pay url for onepay
 
 ## Installation
 
 ```sh
-npm install react-native-onepay-hash
+npm install react-native-onepay
+
+yarn add react-native-onepay
 ```
 
 ## Usage
