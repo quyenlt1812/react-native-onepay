@@ -5,7 +5,6 @@ enum NetworkType: String {
 
 class HashHelpers {
   func secureHashKey(dict:[String:String], secretKey: String) -> String {
-    print("SMLog 123", dict)
     var stringDict = ""
     let dictSort = dict.sorted { $0.0 < $1.0 }
     var index = 0
@@ -93,7 +92,7 @@ class OnepayHash: NSObject {
     resolve(a*b)
   }
   
-  @objc(generateURL:withCommand:withAccessCode:withMerchant:withLocale:withReturnUrl:withOrderInfo:withAmount:withTitle: withCurrency:withSecretKey:withBaseUrl:withMerchTxnRef:withResolver:withRejecter:)
+  @objc(generateURL:withCommand:withAccessCode:withMerchant:withLocale:withReturnUrl:withOrderInfo:withAmount:withTitle: withCurrency:withSecretKey:withBaseUrl:withMerchTxnRef:withAgainLink:withCardList:withResolver:withRejecter:)
   func generateURL( version:String,
                     command:String,
                     accessCode:String,
@@ -107,6 +106,8 @@ class OnepayHash: NSObject {
                     secretKey: String,
                     baseUrl: String,
                     merchTxnRef:String,
+                    againLink: String,
+                    cardList: String,
                     resolve:RCTPromiseResolveBlock,
                     reject:RCTPromiseRejectBlock) -> Void {
     var ticketNo:String = HashHelpers().getAddress(for: .wifi) ?? ""
@@ -132,7 +133,7 @@ class OnepayHash: NSObject {
       "vpc_TicketNo":ticketNo,
       "Title":title,
       "vpc_Currency":currency,
-      "vpc_CardList": "INTERNATIONAL"
+      "vpc_CardList": cardList
     ]
     var queryItems = [
       URLQueryItem(name: "vpc_Version", value: version),
@@ -147,12 +148,14 @@ class OnepayHash: NSObject {
       URLQueryItem(name: "vpc_TicketNo", value: ticketNo),
       URLQueryItem(name: "Title", value: title),
       URLQueryItem(name: "vpc_Currency", value: currency),
-      URLQueryItem(name: "vpc_CardList", value: "INTERNATIONAL")
+      URLQueryItem(name: "vpc_CardList", value: cardList)
     ]
-    queryItems.append(
-      URLQueryItem(name: "AgainLink", value: "https://mtf.onepay.vn")
-    )
-    dict["AgainLink"] = "https://mtf.onepay.vn"
+    if (againLink != nil) {
+      queryItems.append(
+        URLQueryItem(name: "AgainLink", value: againLink)
+      )
+      dict["AgainLink"] = againLink
+    }
     
     //      if let customerPhone = customerPhone {
     //        queryItems.append(
@@ -172,10 +175,11 @@ class OnepayHash: NSObject {
     //        )
     //        dict["vpc_Customer_Id"] = customerId
     //      }
+    
     queryItems.append(
       URLQueryItem(name: "vpc_SecureHash", value: HashHelpers().secureHashKey(dict: dict, secretKey: secretKey))
     )
-    print("SMLog Hash", HashHelpers().secureHashKey(dict: dict, secretKey: secretKey))
+
     var urlComps = URLComponents(string: baseUrl)!
     urlComps.queryItems = queryItems
     let result = urlComps.url!

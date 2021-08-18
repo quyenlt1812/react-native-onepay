@@ -19,6 +19,8 @@ RCT_EXTERN_METHOD(generateURL:(NSString)version
                   withSecretKey:(NSString)secretKey
                   withBaseUrl:(NSString)baseUrl
                   withMerchTxnRef:(NSString)merchTxnRef
+                  withAgainLink:(NSString)againLink
+                  withCardList:(NSString)cardList
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject)
 

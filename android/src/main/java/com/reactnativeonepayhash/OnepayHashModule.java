@@ -48,6 +48,8 @@ public class OnepayHashModule extends ReactContextBaseJavaModule {
                             String currency,
                             String secretKey,
                             String baseUrl,
+                            String againLink,
+                            String cardList,
                             Promise promise) {
       Map<String, String> mapParams = new HashMap<>();
       // Version module of payment gateway, default is “2”
@@ -83,13 +85,16 @@ public class OnepayHashModule extends ReactContextBaseJavaModule {
       mapParams.put("vpc_TicketNo", "10.2.20.1");
 
       // The link of website before redirecting to OnePAY
-      mapParams.put("AgainLink", "https://mtf.onepay.vn");
+      mapParams.put("AgainLink", againLink);
 
       // Title of payment gateway is shown on the cardholder’s browser
       mapParams.put("Title", title);
 
       // Payment Currency, default is VND
       mapParams.put("vpc_Currency", currency);
+
+      // Payment Card List
+      mapParams.put("vpc_CardList", cardList);
 
       String vpc_SecureHash = Utils.genSecureHash(mapParams, secretKey);
       // Hash encryption is for merchant to authenticate and ensure data integrity.

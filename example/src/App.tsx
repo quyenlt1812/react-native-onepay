@@ -20,7 +20,9 @@ export default function App() {
       'Test Payment',
       'VND',
       '6D0870CDE5F24F34F3915FB0045120DB',
-      'https://mtf.onepay.vn/paygate/vpcpay.op?',
+      'https://scanme.eastplayers.io/cancel-payment',
+      'https://mtf.onepay.vn/',
+      'INTERNATIONAL',
       new Date().getTime().toString()
     ).then((res) => setResult(res));
   }, []);

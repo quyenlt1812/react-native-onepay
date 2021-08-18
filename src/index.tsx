@@ -15,7 +15,9 @@ type OnepayHashType = {
     currency: string,
     secretKey: string,
     baseUrl: string,
-    merchTxnRef: string
+    merchTxnRef: string,
+    againLink: string,
+    cardList: string
   ): Promise<string>;
 };
 
