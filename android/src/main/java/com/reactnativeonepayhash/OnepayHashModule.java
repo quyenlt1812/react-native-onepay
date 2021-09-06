@@ -60,11 +60,8 @@ public class OnepayHashModule extends ReactContextBaseJavaModule {
         // A unique value is created by merchant then send to OnePAY,
         // System.currentTimeMillis for
         // testing
-        if (merchTxnRef != "") {
-            mapParams.put("vpc_MerchTxnRef", merchTxnRef);
-        } else {
-            mapParams.put("vpc_MerchTxnRef", String.valueOf(System.currentTimeMillis()));
-        }
+        mapParams.put("vpc_MerchTxnRef", String.valueOf(System.currentTimeMillis()));
+
         // Order infomation, it could be an order number or brief description of order
         mapParams.put("vpc_OrderInfo", orderInfo);
 
@@ -94,7 +91,7 @@ public class OnepayHashModule extends ReactContextBaseJavaModule {
         // Hash encryption is for merchant to authenticate and ensure data integrity.
         mapParams.put("vpc_SecureHash", vpc_SecureHash);
         String paramsUrl = Utils.appendQueryFields(mapParams);
-        promise.resolve(baseUrl + paramsUrl);
+        promise.resolve(baseUrl + "?" + paramsUrl);
 
     }
 
