@@ -60,7 +60,11 @@ public class OnepayHashModule extends ReactContextBaseJavaModule {
         // A unique value is created by merchant then send to OnePAY,
         // System.currentTimeMillis for
         // testing
-        mapParams.put("vpc_MerchTxnRef", merchTxnRef);
+        if (merchTxnRef != "") {
+            mapParams.put("vpc_MerchTxnRef", merchTxnRef);
+        } else {
+            mapParams.put("vpc_MerchTxnRef", String.valueOf(System.currentTimeMillis()));
+        }
         // Order infomation, it could be an order number or brief description of order
         mapParams.put("vpc_OrderInfo", orderInfo);
 
