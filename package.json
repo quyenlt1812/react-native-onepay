@@ -1,6 +1,6 @@
 {
   "name": "react-native-onepay",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Hash secure key and generate pay url for onepay",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
