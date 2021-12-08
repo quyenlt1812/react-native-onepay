@@ -1,36 +1,36 @@
-import * as React from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, View } from 'react-native';
 import OnepayHash from 'react-native-onepay-hash';
 import WebView from 'react-native-webview';
 
-export default function App() {
-  const [result, setResult] = React.useState<string>();
-  console.log('🚀 ~ file: App.tsx ~ line 8 ~ App ~ result', result);
+const App: FC = () => {
+  const [result, setResult] = useState<string>();
 
-  React.useEffect(() => {
-    OnepayHash.generateURL(
-      '2',
-      'pay',
-      '6BEB2546',
-      'TESTONEPAY',
-      'en',
-      'https://localhost/returnurl',
-      '123214125125',
-      '1000000',
-      'Test Payment',
-      'VND',
-      '6D0870CDE5F24F34F3915FB0045120DB',
-      'https://scanme.eastplayers.io/cancel-payment',
-      'https://mtf.onepay.vn/',
-      'INTERNATIONAL',
-      new Date().getTime().toString()
-    ).then((res) => setResult(res));
+  useEffect(() => {
+    const url = OnepayHash.generateURL({
+      version: '2',
+      command: 'pay',
+      accessCode: '6BEB2546',
+      merchant: 'TESTONEPAY',
+      locale: 'en',
+      returnUrl: 'https://localhost/returnurl',
+      orderInfo: '123214125125',
+      amount: '1000000',
+      title: 'Test Payment',
+      currency: 'VND',
+      secretKey: '6D0870CDE5F24F34F3915FB0045120DB',
+      baseUrl: 'https://mtf.onepay.vn/',
+      merchTxnRef: new Date().getTime().toString(),
+      againLink: 'https://scanme.eastplayers.io/cancel-payment',
+      cardList: 'INTERNATIONAL',
+    });
+
+    setResult(url);
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-        {/* <Text>Haha: {result}</Text> */}
         {result && (
           <WebView
             source={{ uri: result }}
@@ -43,7 +43,7 @@ export default function App() {
       </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -57,3 +57,5 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
 });
+
+export default App;
