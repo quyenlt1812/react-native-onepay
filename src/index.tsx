@@ -22,8 +22,7 @@ export interface URLProps {
 }
 
 type OnepayHashType = {
-  multiply(a: number, b: number): Promise<number>;
-  generateURL(opProps: URLProps): string;
+  generateURL(opProps: URLProps): Promise<string>;
 };
 
 const { OnepayHash: Onepay } = NativeModules;

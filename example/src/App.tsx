@@ -7,7 +7,7 @@ const App: FC = () => {
   const [result, setResult] = useState<string>();
 
   useEffect(() => {
-    const url = OnepayHash.generateURL({
+    OnepayHash.generateURL({
       version: '2',
       command: 'pay',
       accessCode: '6BEB2546',
@@ -23,9 +23,7 @@ const App: FC = () => {
       merchTxnRef: new Date().getTime().toString(),
       againLink: 'https://scanme.eastplayers.io/cancel-payment',
       cardList: 'INTERNATIONAL',
-    });
-
-    setResult(url);
+    }).then((res) => setResult(res));
   }, []);
 
   return (
