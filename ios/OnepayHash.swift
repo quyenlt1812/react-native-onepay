@@ -109,7 +109,10 @@ class OnepayProps: NSObject {
 
 @objc(OnepayHash)
 class OnepayHash: NSObject {
-  @objc func generateURL(opProps: OnepayProps) -> String {
+  @objc(generateURL:withResolver:withRejecter:)
+  func generateURL(opProps: OnepayProps,
+                   resolve: RCTPromiseResolveBlock,
+                   reject: RCTPromiseRejectBlock) -> Void {
     var ticketNo: String = HashHelpers().getAddress(for: .wifi) ?? ""
     if ticketNo.elementsEqual("") {
       ticketNo = HashHelpers().getAddress(for: .cellular) ?? ""
@@ -186,6 +189,6 @@ class OnepayHash: NSObject {
     var urlComps = URLComponents(string: opProps.baseUrl)!
     urlComps.queryItems = queryItems
     let result = urlComps.url!
-    return result.absoluteString
+    resolve(result.absoluteString)
   }
 }
