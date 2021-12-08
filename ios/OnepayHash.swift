@@ -104,15 +104,42 @@ class OnepayProps: NSObject {
   var customerId: String?
   var customerEmail: String?
   var customerPhone: String?
+  
+  init(dictionary: [String: Any]) {
+    self.version = dictionary["version"] as? String ?? "2"
+    self.command = dictionary["command"] as? String ?? "pay"
+    self.accessCode = dictionary["accessCode"] as? String ?? ""
+    self.merchant = dictionary["merchant"] as? String ?? ""
+    self.locale = dictionary["locale"] as? String ?? ""
+    self.returnUrl = dictionary["returnUrl"] as? String ?? ""
+    self.orderInfo = dictionary["orderInfo"] as? String ?? ""
+    self.amount = dictionary["amount"] as? String ?? ""
+    self.title = dictionary["title"] as? String ?? ""
+    self.currency = dictionary["currency"] as? String ?? ""
+    self.secretKey = dictionary["secretKey"] as? String ?? ""
+    self.baseUrl = dictionary["baseUrl"] as? String ?? ""
+    self.merchTxnRef = dictionary["merchTxnRef"] as? String ?? ""
+    self.againLink = dictionary["againLink"] as? String ?? ""
+    self.cardList = dictionary["cardList"] as? String ?? ""
+    self.customerId = dictionary["customerId"] as? String ?? ""
+    self.customerEmail = dictionary["customerEmail"] as? String ?? ""
+    self.customerPhone = dictionary["customerPhone"] as? String ?? ""
+  }
 }
 
 
 @objc(OnepayHash)
 class OnepayHash: NSObject {
   @objc(generateURL:withResolver:withRejecter:)
-  func generateURL(opProps: OnepayProps,
+  func generateURL(opProps: NSDictionary,
                    resolve: RCTPromiseResolveBlock,
                    reject: RCTPromiseRejectBlock) -> Void {
+    guard let opPropsDictionary = opProps as? [String: Any] else {
+      return
+    }
+    
+    let convertedProps = OnepayProps(dictionary: opPropsDictionary)
+    
     var ticketNo: String = HashHelpers().getAddress(for: .wifi) ?? ""
     if ticketNo.elementsEqual("") {
       ticketNo = HashHelpers().getAddress(for: .cellular) ?? ""
@@ -120,73 +147,73 @@ class OnepayHash: NSObject {
     if ticketNo.elementsEqual("") {
       ticketNo = "10.2.20.1"
     }
-    var amountString = opProps.amount.replacingOccurrences(of: ".", with: "") + "00"
+    var amountString = convertedProps.amount.replacingOccurrences(of: ".", with: "") + "00"
     amountString = amountString.replacingOccurrences(of: ",", with: "")
 
     var dict = [
-      "vpc_Version": opProps.version,
-      "vpc_Command": opProps.command,
-      "vpc_AccessCode": opProps.accessCode,
-      "vpc_Merchant": opProps.merchant,
-      "vpc_Locale": opProps.locale,
-      "vpc_ReturnURL": opProps.returnUrl,
-      "vpc_MerchTxnRef": opProps.merchTxnRef,
-      "vpc_OrderInfo": opProps.orderInfo,
+      "vpc_Version": convertedProps.version,
+      "vpc_Command": convertedProps.command,
+      "vpc_AccessCode": convertedProps.accessCode,
+      "vpc_Merchant": convertedProps.merchant,
+      "vpc_Locale": convertedProps.locale,
+      "vpc_ReturnURL": convertedProps.returnUrl,
+      "vpc_MerchTxnRef": convertedProps.merchTxnRef,
+      "vpc_OrderInfo": convertedProps.orderInfo,
       "vpc_Amount": amountString,
       "vpc_TicketNo": ticketNo,
-      "Title": opProps.title,
-      "vpc_Currency": opProps.currency,
-      "vpc_CardList": opProps.cardList,
+      "Title": convertedProps.title,
+      "vpc_Currency": convertedProps.currency,
+      "vpc_CardList": convertedProps.cardList,
     ]
     var queryItems = [
-      URLQueryItem(name: "vpc_Version", value: opProps.version),
-      URLQueryItem(name: "vpc_Command", value: opProps.command),
-      URLQueryItem(name: "vpc_AccessCode", value: opProps.accessCode),
-      URLQueryItem(name: "vpc_Merchant", value: opProps.merchant),
-      URLQueryItem(name: "vpc_Locale", value: opProps.locale),
-      URLQueryItem(name: "vpc_ReturnURL", value: opProps.returnUrl),
-      URLQueryItem(name: "vpc_MerchTxnRef", value: opProps.merchTxnRef),
-      URLQueryItem(name: "vpc_OrderInfo", value: opProps.orderInfo),
+      URLQueryItem(name: "vpc_Version", value: convertedProps.version),
+      URLQueryItem(name: "vpc_Command", value: convertedProps.command),
+      URLQueryItem(name: "vpc_AccessCode", value: convertedProps.accessCode),
+      URLQueryItem(name: "vpc_Merchant", value: convertedProps.merchant),
+      URLQueryItem(name: "vpc_Locale", value: convertedProps.locale),
+      URLQueryItem(name: "vpc_ReturnURL", value: convertedProps.returnUrl),
+      URLQueryItem(name: "vpc_MerchTxnRef", value: convertedProps.merchTxnRef),
+      URLQueryItem(name: "vpc_OrderInfo", value: convertedProps.orderInfo),
       URLQueryItem(name: "vpc_Amount", value: amountString),
       URLQueryItem(name: "vpc_TicketNo", value: ticketNo),
-      URLQueryItem(name: "Title", value: opProps.title),
-      URLQueryItem(name: "vpc_Currency", value: opProps.currency),
-      URLQueryItem(name: "vpc_CardList", value: opProps.cardList)
+      URLQueryItem(name: "Title", value: convertedProps.title),
+      URLQueryItem(name: "vpc_Currency", value: convertedProps.currency),
+      URLQueryItem(name: "vpc_CardList", value: convertedProps.cardList)
     ]
     
-    if (opProps.againLink != "") {
+    if (convertedProps.againLink != "") {
       queryItems.append(
-        URLQueryItem(name: "AgainLink", value: opProps.againLink)
+        URLQueryItem(name: "AgainLink", value: convertedProps.againLink)
       )
-      dict["AgainLink"] = opProps.againLink
+      dict["AgainLink"] = convertedProps.againLink
     }
     
     
 
-    if (opProps.customerPhone != nil) {
+    if (convertedProps.customerPhone != nil) {
       queryItems.append(
-        URLQueryItem(name: "vpc_Customer_Phone", value: opProps.customerPhone)
+        URLQueryItem(name: "vpc_Customer_Phone", value: convertedProps.customerPhone)
       )
-      dict["vpc_Customer_Phone"] = opProps.customerPhone
+      dict["vpc_Customer_Phone"] = convertedProps.customerPhone
     }
-    if (opProps.customerEmail != nil) {
+    if (convertedProps.customerEmail != nil) {
       queryItems.append(
-        URLQueryItem(name: "vpc_Customer_Email", value: opProps.customerEmail)
+        URLQueryItem(name: "vpc_Customer_Email", value: convertedProps.customerEmail)
       )
-      dict["vpc_Customer_Email"] = opProps.customerEmail
+      dict["vpc_Customer_Email"] = convertedProps.customerEmail
     }
-    if (opProps.customerId != nil) {
+    if (convertedProps.customerId != nil) {
       queryItems.append(
-        URLQueryItem(name: "vpc_Customer_Id", value: opProps.customerId)
+        URLQueryItem(name: "vpc_Customer_Id", value: convertedProps.customerId)
       )
-      dict["vpc_Customer_Id"] = opProps.customerId
+      dict["vpc_Customer_Id"] = convertedProps.customerId
     }
 
     queryItems.append(
-      URLQueryItem(name: "vpc_SecureHash", value: HashHelpers().secureHashKey(dict: dict, secretKey: opProps.secretKey))
+      URLQueryItem(name: "vpc_SecureHash", value: HashHelpers().secureHashKey(dict: dict, secretKey: convertedProps.secretKey))
     )
 
-    var urlComps = URLComponents(string: opProps.baseUrl)!
+    var urlComps = URLComponents(string: convertedProps.baseUrl)!
     urlComps.queryItems = queryItems
     let result = urlComps.url!
     resolve(result.absoluteString)
