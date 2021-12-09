@@ -20,62 +20,62 @@ class HashHelpers {
         }
       }
     }
-
+    
     let hmacData2 = hmac(hashName: "SHA256", message: stringDict.data(using: .utf8)!, key: secretKey.hexaData)
     let str = hmacData2!.hexEncodedString(options: .upperCase)
     return str
   }
-
+  
   func hmac(hashName: String, message: Data, key: Data) -> Data? {
     let algos = ["SHA1": (kCCHmacAlgSHA1, CC_SHA1_DIGEST_LENGTH),
-      "MD5": (kCCHmacAlgMD5, CC_MD5_DIGEST_LENGTH),
-      "SHA224": (kCCHmacAlgSHA224, CC_SHA224_DIGEST_LENGTH),
-      "SHA256": (kCCHmacAlgSHA256, CC_SHA256_DIGEST_LENGTH),
-      "SHA384": (kCCHmacAlgSHA384, CC_SHA384_DIGEST_LENGTH),
-      "SHA512": (kCCHmacAlgSHA512, CC_SHA512_DIGEST_LENGTH)]
+                 "MD5": (kCCHmacAlgMD5, CC_MD5_DIGEST_LENGTH),
+                 "SHA224": (kCCHmacAlgSHA224, CC_SHA224_DIGEST_LENGTH),
+                 "SHA256": (kCCHmacAlgSHA256, CC_SHA256_DIGEST_LENGTH),
+                 "SHA384": (kCCHmacAlgSHA384, CC_SHA384_DIGEST_LENGTH),
+                 "SHA512": (kCCHmacAlgSHA512, CC_SHA512_DIGEST_LENGTH)]
     guard let (hashAlgorithm, length) = algos[hashName] else { return nil }
     var macData = Data(count: Int(length))
-
+    
     macData.withUnsafeMutableBytes { (macBytes: UnsafeMutableRawBufferPointer) in
       message.withUnsafeBytes { (messageBytes: UnsafeRawBufferPointer) in
         key.withUnsafeBytes { (keyBytes: UnsafeRawBufferPointer) in
           CCHmac(CCHmacAlgorithm(hashAlgorithm),
-            keyBytes.baseAddress?.assumingMemoryBound(to: UInt8.self),
-            key.count,
-            messageBytes.baseAddress?.assumingMemoryBound(to: UInt8.self),
-            message.count,
-            macBytes.baseAddress?.assumingMemoryBound(to: UInt8.self))
+                 keyBytes.baseAddress?.assumingMemoryBound(to: UInt8.self),
+                 key.count,
+                 messageBytes.baseAddress?.assumingMemoryBound(to: UInt8.self),
+                 message.count,
+                 macBytes.baseAddress?.assumingMemoryBound(to: UInt8.self))
         }
       }
     }
     return macData
   }
-
+  
   func getAddress(for network: NetworkType) -> String? {
     var address: String?
-
+    
     // Get list of all interfaces on the local machine:
     var ifaddr: UnsafeMutablePointer<ifaddrs>?
     guard getifaddrs(&ifaddr) == 0 else { return nil }
     guard let firstAddr = ifaddr else { return nil }
-
+    
     // For each interface ...
     for ifptr in sequence(first: firstAddr, next: { $0.pointee.ifa_next }) {
       let interface = ifptr.pointee
-
+      
       // Check for IPv4 or IPv6 interface:
       let addrFamily = interface.ifa_addr.pointee.sa_family
       if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
-
+        
         // Check interface name:
         let name = String(cString: interface.ifa_name)
         if name == network.rawValue {
-
+          
           // Convert interface address to a human readable string:
           var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
           getnameinfo(interface.ifa_addr, socklen_t(interface.ifa_addr.pointee.sa_len),
-              &hostname, socklen_t(hostname.count),
-            nil, socklen_t(0), NI_NUMERICHOST)
+                      &hostname, socklen_t(hostname.count),
+                      nil, socklen_t(0), NI_NUMERICHOST)
           address = String(cString: hostname)
         }
       }
@@ -149,7 +149,7 @@ class OnepayHash: NSObject {
     }
     var amountString = convertedProps.amount.replacingOccurrences(of: ".", with: "") + "00"
     amountString = amountString.replacingOccurrences(of: ",", with: "")
-
+    
     var dict = [
       "vpc_Version": convertedProps.version,
       "vpc_Command": convertedProps.command,
@@ -188,31 +188,31 @@ class OnepayHash: NSObject {
       dict["AgainLink"] = convertedProps.againLink
     }
     
-    
-
-    if (convertedProps.customerPhone != nil) {
+    if (convertedProps.customerPhone != "") {
       queryItems.append(
         URLQueryItem(name: "vpc_Customer_Phone", value: convertedProps.customerPhone)
       )
       dict["vpc_Customer_Phone"] = convertedProps.customerPhone
     }
-    if (convertedProps.customerEmail != nil) {
+    
+    if (convertedProps.customerEmail != "") {
       queryItems.append(
         URLQueryItem(name: "vpc_Customer_Email", value: convertedProps.customerEmail)
       )
       dict["vpc_Customer_Email"] = convertedProps.customerEmail
     }
-    if (convertedProps.customerId != nil) {
+    
+    if (convertedProps.customerId != "") {
       queryItems.append(
         URLQueryItem(name: "vpc_Customer_Id", value: convertedProps.customerId)
       )
       dict["vpc_Customer_Id"] = convertedProps.customerId
     }
-
+    
     queryItems.append(
       URLQueryItem(name: "vpc_SecureHash", value: HashHelpers().secureHashKey(dict: dict, secretKey: convertedProps.secretKey))
     )
-
+    
     var urlComps = URLComponents(string: convertedProps.baseUrl)!
     urlComps.queryItems = queryItems
     let result = urlComps.url!
