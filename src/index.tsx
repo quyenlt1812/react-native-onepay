@@ -17,7 +17,7 @@ export interface URLProps {
   againLink: string;
   cardList: string;
   customerId?: string;
-  customerName?: string;
+  customerPhone?: string;
   customerEmail?: string;
 }
 
